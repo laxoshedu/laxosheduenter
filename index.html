@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liquid Portal Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- DYNAMIC THEME VARIABLES --- */
+        :root {
+            --bg-color: #070b12;
+            --bg-gradient: linear-gradient(135deg, #070b12, #101a26);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #94a9b8;
+            --accent: #00e5ff;
+            --nav-bg: rgba(255, 255, 255, 0.05);
+            --container-width: 1100px;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f0f4f8;
+            --bg-gradient: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(0, 0, 0, 0.08);
+            --text-main: #1a202c;
+            --text-muted: #4a5568;
+            --accent: #3182ce;
+            --nav-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.4s ease, color 0.4s ease, border 0.4s ease;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 120px;
+        }
+
+        /* --- FIXED LIQUID NAV --- */
+        .top-navbar {
+            position: fixed;
+            top: 20px;
+            width: 90%;
+            max-width: var(--container-width);
+            height: 70px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            z-index: 1000;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo { font-weight: 700; font-size: 1.2rem; cursor: default; }
+        .nav-logo span { color: var(--accent); }
+
+        /* --- DESKTOP MENU BAR --- */
+        .desktop-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .desktop-menu a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+        .desktop-menu a:hover, .desktop-menu .theme-toggle-btn:hover {
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--accent);
+        }
+
+        /* Generic Theme Button Styles */
+        .theme-toggle-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: 0.3s;
+        }
+
+        .desktop-menu .theme-toggle-btn {
+            font-size: 1.2rem;
+            padding: 8px 12px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Mobile Hamburger Icon */
+        .menu-trigger {
+            cursor: pointer;
+            font-size: 1.8rem;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            display: none; /* Hidden on Desktop */
+            align-items: center;
+        }
+
+        /* --- MOBILE DROPDOWN MENU --- */
+        .menu-overlay {
+            position: fixed;
+            top: 100px;
+            right: 5%;
+            width: 250px;
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--card-border);
+            border-radius: 25px;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 999;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .menu-overlay a, .menu-overlay .theme-toggle-btn {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 12px 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .menu-overlay a:hover, .menu-overlay .theme-toggle-btn:hover { 
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--accent);
+        }
+
+        .menu-sep { height: 1px; background: var(--card-border); margin: 5px 0; }
+
+        /* Responsive Breakpoints for Menu */
+        @media (max-width: 850px) {
+            .desktop-menu { display: none; }
+            .menu-trigger { display: flex; }
+            .top-navbar { width: 95%; padding: 0 20px; }
+        }
+        @media (min-width: 851px) {
+            .menu-overlay { display: none !important; }
+        }
+
+        /* --- MAIN WRAPPER & ALIGNMENT --- */
+        .main-wrapper {
+            width: 100%;
+            max-width: var(--container-width);
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        /* --- MAIN APP CARD --- */
+        #home-app { scroll-margin-top: 150px; }
+        .main-app-link { text-decoration: none; display: block; opacity: 0; transform: translateY(30px); }
+
+        .featured-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 35px;
+            padding: 60px;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .featured-card::after {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            background: linear-gradient(45deg, var(--accent), #7209b7);
+            filter: blur(80px);
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            z-index: 0;
+            transition: 0.8s ease;
+        }
+
+        .featured-card:hover::after { opacity: 0.2; transform: translate(-50%, -50%) scale(1.6); }
+        .featured-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 40px 80px rgba(0,0,0,0.4); }
+
+        .featured-icon { width: 180px; height: 180px; border-radius: 40px; overflow: hidden; z-index: 1; position: relative; }
+        .featured-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .featured-content { z-index: 1; flex: 1; }
+        .badge { background: var(--accent); color: #000; font-size: 0.75rem; font-weight: 700; padding: 5px 15px; border-radius: 50px; margin-bottom: 20px; display: inline-block; }
+        .featured-title { font-size: 2.8rem; color: var(--text-main); line-height: 1.1; margin-bottom: 15px; }
+        .featured-desc { color: var(--text-muted); line-height: 1.6; font-size: 1.1rem; }
+
+        /* --- OTHER TOOLS GRID --- */
+        #other-tools { scroll-margin-top: 120px; }
+        .section-header { text-align: center; opacity: 0; }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 30px;
+            padding: 45px 30px;
+            text-decoration: none;
+            color: var(--text-main);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+        }
+
+        /* GRID CARD HOVER EFFECTS */
+        .app-card:hover {
+            transform: translateY(-12px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(0, 229, 255, 0.1);
+        }
+
+        .app-icon-small { width: 100px; height: 100px; margin: 0 auto 25px; border-radius: 25px; overflow: hidden; transition: 0.4s; }
+        .app-card:hover .app-icon-small { transform: scale(1.1) rotate(-5deg); }
+        .app-icon-small img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- ABOUT SECTION --- */
+        #about { scroll-margin-top: 120px; }
+        .content-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 35px;
+            padding: 60px;
+            opacity: 0;
+            margin-bottom: 80px;
+        }
+        .content-section p { line-height: 1.9; color: var(--text-muted); margin-bottom: 25px; text-align: justify; font-size: 1.05rem; }
+
+        /* --- CONTINUOUS ATTENTION GRABBER --- */
+        .attention-container {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .attention-wrapper {
+            position: relative;
+            width: 60px; height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .attention-blob {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: linear-gradient(45deg, var(--accent), #7209b7);
+            border-radius: 40% 60% 60% 40%;
+            animation: spinBlob 4s linear infinite;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+        }
+
+        .attention-ring {
+            position: absolute;
+            width: 100%; height: 100%;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            animation: pulseRing 2s ease-out infinite;
+        }
+
+        .attention-text { display: flex; flex-direction: column; }
+        .attention-text .status {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .attention-text .subtext { font-size: 0.95rem; color: var(--text-muted); }
+
+        @keyframes spinBlob {
+            0% { transform: rotate(0deg); border-radius: 40% 60% 60% 40%; }
+            50% { border-radius: 60% 40% 40% 60%; }
+            100% { transform: rotate(360deg); border-radius: 40% 60% 60% 40%; }
+        }
+        @keyframes pulseRing {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        /* --- FOOTER --- */
+        footer { width: 100%; padding: 50px; background: rgba(0,0,0,0.2); text-align: center; color: var(--text-muted); margin-top: auto; }
+
+        /* --- LOAD ANIMATIONS --- */
+        .animate-show { animation: fadeInUp 0.8s forwards; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile Adjustments for Main Content */
+        @media (max-width: 850px) {
+            .featured-card { flex-direction: column; text-align: center; padding: 40px; }
+            .featured-title { font-size: 2rem; }
+            .attention-container { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <nav class="top-navbar">
+        <div class="nav-logo">Laxosh<span>Edu</span></div>
+        
+        <!-- DESKTOP MENU -->
+        <div class="desktop-menu">
+            <a href="#home-app">Home App</a>
+            <a href="#other-tools">Other Tools</a>
+            <a href="#about">About Portal</a>
+            <button class="theme-toggle-btn" title="Toggle Theme">
+                <span class="theme-icon">☀️</span>
+            </button>
+        </div>
+
+        <!-- MOBILE MENU BUTTON -->
+        <button class="menu-trigger" id="menuBtn">🍔</button>
+    </nav>
+
+    <!-- MOBILE OVERLAY MENU -->
+    <div class="menu-overlay" id="menuOverlay">
+        <a href="#home-app">🏠 Home App</a>
+        <a href="#other-tools">🛠️ Other Tools</a>
+        <a href="#about">ℹ️ About Portal</a>
+        <div class="menu-sep"></div>
+        <button class="theme-toggle-btn">
+            <span class="theme-icon">☀️</span> <span class="theme-text">Light Mode</span>
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        
+        <!-- MAIN APP -->
+        <a href="https://laxoshedu.github.io" class="main-app-link animate-target" id="home-app">
+            <div class="featured-card">
+                <div class="featured-icon">
+                    <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&w=400&q=80">
+                </div>
+                <div class="featured-content">
+                    <span class="badge">Open the tool</span>
+                    <h2 class="featured-title">The Ultimate Online Quiz Maker & Practice Tool</h2>
+                    <p class="featured-desc">Create, manage, and practice quizzes with ease. Design engaging tests, organize question, track learning progress, and provide an interactive experience for students—all from one powerful online platform.</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- GRID HEADER -->
+        <div class="section-header animate-target" id="other-tools">
+            <h2 style="font-size: 2.2rem; margin-bottom: 10px;">Explore Our Other Tools</h2>
+        </div>
+
+        <!-- APP GRID -->
+        <div class="app-grid">
+            <a href="#" class="app-card animate-target">
+                <div class="app-icon-small"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=200&q=80"></div>
+                <h3>Cloud Insights</h3>
+                <p class="app-desc">Advanced data processing with automated reporting engines.</p>
+            </a>
+            <a href="#" class="app-card animate-target">
+                <div class="app-icon-small"><img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=200&q=80"></div>
+                <h3>Social Sync</h3>
+                <p class="app-desc">Centralized engagement hub for all global social modules.</p>
+            </a>
+            <a href="#" class="app-card animate-target">
+                <div class="app-icon-small"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=200&q=80"></div>
+                <h3>Finance Portal</h3>
+                <p class="app-desc">Encrypted ledger for monitoring revenue and fiscal operations.</p>
+            </a>
+        </div>
+
+        <!-- ABOUT SECTION -->
+        <section class="content-section animate-target" id="about">
+            <h2 style="margin-bottom: 25px; font-size: 2.2rem;">About LAXOSHEDU Infrastructure</h2>
+            <p>
+                LAXOSHEDU is a comprehensive educational hub designed to empower teachers, students, and educational professionals with innovative digital tools that simplify teaching, learning, and academic management. Our platform brings together interactive resources in one place, making education more engaging, organized, and accessible for everyone.
+            </p>
+            <p>
+                Whether you're creating quizzes, practicing for examinations, preparing classroom activities, managing study materials, or exploring educational utilities, LAXOSHEDU provides a seamless experience that supports learning at every stage. Our goal is to save time, improve productivity, and encourage active participation through user-friendly and interactive tools.
+            </p>
+            <p>
+                At LAXOSHEDU, we believe that technology should make education smarter, more collaborative, and more enjoyable. We are committed to continuously developing innovative solutions that help educators teach more effectively, students learn with confidence, and professionals access practical tools that support their daily educational and administrative needs. 
+            </p>
+            
+            <!-- ATTENTION GRABBER (SYSTEM ONLINE ANIMATION) -->
+            <div class="attention-container">
+                <div class="attention-wrapper">
+                    <div class="attention-blob"></div>
+                    <div class="attention-ring"></div>
+                </div>
+                <div class="attention-text">
+                    <span class="status">Platform Ready</span>
+                    <span class="subtext">All educational tools are online and ready to support teaching, learning, and productivity.</span>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2024 LAXOSHEDU Unified Portal • All Systems Operational</p>
+    </footer>
+
+    <script>
+        // --- THEME STORAGE & SYNC ENGINE ---
+        const body = document.body;
+        const themeToggleBtns = document.querySelectorAll('.theme-toggle-btn');
+        const themeIcons = document.querySelectorAll('.theme-icon');
+        const themeTexts = document.querySelectorAll('.theme-text'); // Only exists in mobile menu
+
+        // 1. Check Local Storage on Load
+        const savedTheme = localStorage.getItem('portalTheme') || 'dark';
+        body.setAttribute('data-theme', savedTheme);
+        updateUI(savedTheme);
+
+        // 2. Add click events to ALL theme buttons (Desktop + Mobile)
+        themeToggleBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault(); // Stop link jumping if any
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('portalTheme', newTheme);
+                updateUI(newTheme);
+            });
+        });
+
+        // 3. Sync Icons and Texts based on active theme
+        function updateUI(theme) {
+            themeIcons.forEach(icon => {
+                icon.innerText = theme === 'dark' ? '☀️' : '🌙';
+            });
+            themeTexts.forEach(text => {
+                text.innerText = theme === 'dark' ? 'Light Mode' : 'Night Mode';
+            });
+        }
+
+        // --- MOBILE MENU LOGIC ---
+        const menuBtn = document.getElementById('menuBtn');
+        const menuOverlay = document.getElementById('menuOverlay');
+        
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menuOverlay.style.display = menuOverlay.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        document.addEventListener('click', () => { menuOverlay.style.display = 'none'; });
+        menuOverlay.addEventListener('click', (e) => { e.stopPropagation(); });
+
+        // Close mobile menu when clicking a regular link inside it
+        const menuLinks = menuOverlay.querySelectorAll('a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => { menuOverlay.style.display = 'none'; });
+        });
+
+        // --- WATERFALL LOAD ANIMATION ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const targets = document.querySelectorAll('.animate-target');
+            targets.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('animate-show');
+                }, index * 120);
+            });
+        });
+    </script>
+</body>
+</html>

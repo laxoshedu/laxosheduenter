@@ -220,7 +220,7 @@
         .featured-card:hover::after { opacity: 0.2; transform: translate(-50%, -50%) scale(1.6); }
         .featured-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 40px 80px rgba(0,0,0,0.4); }
 
-        .featured-icon { width: 180px; height: 180px; border-radius: 40px; overflow: hidden; z-index: 1; position: relative; }
+        .featured-icon { width: 180px; height: 180px; border-radius: 40px; overflow: hidden; z-index: 1; position: relative; flex-shrink: 0; }
         .featured-icon img { width: 100%; height: 100%; object-fit: cover; }
         .featured-content { z-index: 1; flex: 1; }
         .badge { background: var(--accent); color: #000; font-size: 0.75rem; font-weight: 700; padding: 5px 15px; border-radius: 50px; margin-bottom: 20px; display: inline-block; }
@@ -259,9 +259,30 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(0, 229, 255, 0.1);
         }
 
-        .app-icon-small { width: 100px; height: 100px; margin: 0 auto 25px; border-radius: 25px; overflow: hidden; transition: 0.4s; }
+        .app-icon-small { width: 100px; height: 100px; margin: 0 auto 25px; border-radius: 25px; overflow: hidden; transition: 0.4s; flex-shrink: 0; }
         .app-card:hover .app-icon-small { transform: scale(1.1) rotate(-5deg); }
         .app-icon-small img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- LETTER AVATAR FALLBACK STYLE --- */
+        .letter-avatar {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--accent), #7209b7);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 4rem;
+            border-radius: inherit;
+            text-transform: uppercase;
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.2);
+            user-select: none;
+        }
+
+        .app-icon-small .letter-avatar {
+            font-size: 2.2rem;
+        }
 
         /* --- ABOUT SECTION --- */
         #about { scroll-margin-top: 120px; }
@@ -382,7 +403,7 @@
         <a href="https://laxoshedu.github.io" class="main-app-link animate-target" id="home-app">
             <div class="featured-card">
                 <div class="featured-icon">
-                    <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&w=400&q=80">
+                    <img src="" alt="Quiz Maker Logo">
                 </div>
                 <div class="featured-content">
                     <span class="badge">Open the tool</span>
@@ -400,17 +421,26 @@
         <!-- APP GRID -->
         <div class="app-grid">
             <a href="#" class="app-card animate-target">
-                <div class="app-icon-small"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=200&q=80"></div>
+                <div class="app-icon-small">
+                    <img src="" alt="Cloud Insights Logo">
+                </div>
                 <h3>Cloud Insights</h3>
                 <p class="app-desc">Advanced data processing with automated reporting engines.</p>
             </a>
+            
             <a href="#" class="app-card animate-target">
-                <div class="app-icon-small"><img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?auto=format&fit=crop&w=200&q=80"></div>
+                <div class="app-icon-small">
+                    <!-- Missing URL example: Fallback automatically creates 'S' -->
+                    <img src="" alt="Social Sync Logo">
+                </div>
                 <h3>Social Sync</h3>
                 <p class="app-desc">Centralized engagement hub for all global social modules.</p>
             </a>
+            
             <a href="#" class="app-card animate-target">
-                <div class="app-icon-small"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=200&q=80"></div>
+                <div class="app-icon-small">
+                    <img src="" alt="Finance Portal Logo">
+                </div>
                 <h3>Finance Portal</h3>
                 <p class="app-desc">Encrypted ledger for monitoring revenue and fiscal operations.</p>
             </a>
@@ -449,21 +479,50 @@
     </footer>
 
     <script>
+        // --- LOGO FALLBACK ENGINE ---
+        function initLogoFallbacks() {
+            const cards = document.querySelectorAll('.featured-card, .app-card');
+
+            cards.forEach(card => {
+                const iconContainer = card.querySelector('.featured-icon, .app-icon-small');
+                if (!iconContainer) return;
+
+                const img = iconContainer.querySelector('img');
+                const titleEl = card.querySelector('.featured-title, h3');
+                
+                // Get the first letter of the tool title (default to '?' if title is missing)
+                const titleText = titleEl ? titleEl.textContent.trim() : '';
+                const firstLetter = titleText.charAt(0).toUpperCase() || '?';
+
+                const renderLetterAvatar = () => {
+                    iconContainer.innerHTML = `<div class="letter-avatar">${firstLetter}</div>`;
+                };
+
+                if (!img || !img.getAttribute('src') || img.getAttribute('src').trim() === '') {
+                    renderLetterAvatar();
+                } else {
+                    img.addEventListener('error', renderLetterAvatar);
+                    // Check if image completed loading but failed to load dimensions
+                    if (img.complete && img.naturalWidth === 0) {
+                        renderLetterAvatar();
+                    }
+                }
+            });
+        }
+
         // --- THEME STORAGE & SYNC ENGINE ---
         const body = document.body;
         const themeToggleBtns = document.querySelectorAll('.theme-toggle-btn');
         const themeIcons = document.querySelectorAll('.theme-icon');
-        const themeTexts = document.querySelectorAll('.theme-text'); // Only exists in mobile menu
+        const themeTexts = document.querySelectorAll('.theme-text');
 
-        // 1. Check Local Storage on Load
         const savedTheme = localStorage.getItem('portalTheme') || 'dark';
         body.setAttribute('data-theme', savedTheme);
         updateUI(savedTheme);
 
-        // 2. Add click events to ALL theme buttons (Desktop + Mobile)
         themeToggleBtns.forEach(btn => {
             btn.addEventListener('click', (e) => {
-                e.preventDefault(); // Stop link jumping if any
+                e.preventDefault();
                 const currentTheme = body.getAttribute('data-theme');
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 
@@ -473,7 +532,6 @@
             });
         });
 
-        // 3. Sync Icons and Texts based on active theme
         function updateUI(theme) {
             themeIcons.forEach(icon => {
                 icon.innerText = theme === 'dark' ? '☀️' : '🌙';
@@ -495,14 +553,17 @@
         document.addEventListener('click', () => { menuOverlay.style.display = 'none'; });
         menuOverlay.addEventListener('click', (e) => { e.stopPropagation(); });
 
-        // Close mobile menu when clicking a regular link inside it
         const menuLinks = menuOverlay.querySelectorAll('a');
         menuLinks.forEach(link => {
             link.addEventListener('click', () => { menuOverlay.style.display = 'none'; });
         });
 
-        // --- WATERFALL LOAD ANIMATION ---
+        // --- DOM LOAD INITIALIZATION ---
         document.addEventListener("DOMContentLoaded", () => {
+            // Run logo fallback check
+            initLogoFallbacks();
+
+            // Run waterfall animation
             const targets = document.querySelectorAll('.animate-target');
             targets.forEach((el, index) => {
                 setTimeout(() => {

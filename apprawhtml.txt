@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaxoshEdu Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- DYNAMIC THEME VARIABLES --- */
+        :root {
+            --bg-color: #070b12;
+            --bg-gradient: linear-gradient(135deg, #070b12, #101a26);
+            --card-border: rgba(255, 255, 255, 0.2); /* Slightly stronger for clear visibility */
+            --text-main: #ffffff;
+            --text-muted: #94a9b8;
+            --accent: #00e5ff;
+            --accent-glow: #7209b7;
+            --nav-bg: rgba(255, 255, 255, 0.05);
+            --container-width: 800px;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f0f4f8;
+            --bg-gradient: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+            --card-border: rgba(0, 0, 0, 0.2); /* Slightly stronger for clear visibility */
+            --text-main: #1a202c;
+            --text-muted: #4a5568;
+            --accent: #3182ce;
+            --accent-glow: #805ad5;
+            --nav-bg: rgba(255, 255, 255, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.4s ease, color 0.4s ease, border 0.4s ease;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- FIXED LIQUID NAV --- */
+        .top-navbar {
+            position: fixed;
+            top: 20px;
+            width: 90%;
+            max-width: var(--container-width);
+            height: 70px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            z-index: 1000;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo { font-weight: 700; font-size: 1.2rem; cursor: default; }
+        .nav-logo span { color: var(--accent); }
+
+        .theme-toggle-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-main);
+            font-size: 1.4rem;
+            padding: 8px 12px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--accent);
+        }
+
+        /* --- MAIN WRAPPER & ALIGNMENT --- */
+        .main-wrapper {
+            width: 100%;
+            max-width: var(--container-width);
+            padding: 140px 20px 40px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            text-align: center;
+        }
+
+        /* --- CONTENT DISPLAY (NO CARDS) --- */
+        .hero-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 650px;
+            opacity: 0; 
+            transform: translateY(20px);
+        }
+
+        .badge { 
+            background: rgba(0, 229, 255, 0.15); 
+            color: var(--accent); 
+            border: 1px solid var(--accent);
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            padding: 6px 18px; 
+            border-radius: 50px; 
+            margin-bottom: 25px; 
+            display: inline-block;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* --- ANIMATED TITLE --- */
+        .animated-title { 
+            font-size: 4rem; 
+            font-weight: 700;
+            line-height: 1.1; 
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--text-main), var(--accent), var(--accent-glow), var(--text-main));
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 6s ease-in-out infinite, pulseTitle 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulseTitle {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.03); }
+        }
+
+        .hero-desc { 
+            color: var(--text-muted); 
+            line-height: 1.7; 
+            font-size: 1.15rem; 
+            margin-bottom: 35px;
+        }
+
+        /* --- START BUTTON --- */
+        .start-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: #000;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 16px 42px;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px rgba(0, 229, 255, 0.25);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 15px 35px rgba(0, 229, 255, 0.4);
+        }
+
+        /* --- FOOTER & COMPACT BUTTONS WITH ALWAYS-VISIBLE BORDER --- */
+        footer { 
+            width: 100%; 
+            padding: 25px 20px 30px 20px; 
+            text-align: center; 
+            color: var(--text-muted); 
+            font-size: 0.85rem; 
+            margin-top: auto; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tiny-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: transparent; 
+            /* ALWAYS VISIBLE ACCENT BORDER */
+            border: 1px solid var(--accent); 
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tiny-btn:hover {
+            background: rgba(0, 229, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* --- LOAD ANIMATIONS --- */
+        .animate-show { animation: fadeInUp 0.8s forwards; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile Adjustments */
+        @media (max-width: 850px) {
+            .animated-title { font-size: 2.8rem; }
+            .top-navbar { width: 95%; padding: 0 20px; }
+            .hero-desc { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <!-- NAVBAR -->
+    <nav class="top-navbar">
+        <div class="nav-logo">Laxosh<span>Edu</span></div>
+        <button class="theme-toggle-btn" title="Toggle Theme">
+            <span class="theme-icon">☀️</span>
+        </button>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-wrapper">
+        <div class="hero-container animate-target">
+            <span class="badge">System Online</span>
+            
+            <!-- ANIMATED TITLE -->
+            <h1 class="animated-title">LAXOSH EDU</h1>
+            
+            <p class="hero-desc">Welcome to the LAXOSHEDU Hub. Your ultimate platform for interactive learning, educational tools, and seamless practice.</p>
+            
+            <!-- START BUTTON -->
+            <a href="https://laxoshedu.github.io/laxosheduenter/" class="start-btn">Start the Tool</a>
+        </div>
+    </div>
+
+    <!-- FOOTER SECTION -->
+    <footer>
+        <div class="footer-buttons">
+            <!-- SHARE APP BUTTON -->
+            <button class="tiny-btn" id="shareBtn">
+                🔗 <span id="shareBtnText">Share</span>
+            </button>
+
+            <!-- RATING BUTTON -->
+            <a href="https://play.google.com/store/apps/details?id=physics.elab.app" target="_blank" rel="noopener noreferrer" class="tiny-btn">
+                ⭐ Rate Us
+            </a>
+        </div>
+
+        <p>&copy; 2024 LAXOSHEDU Unified Portal • All Systems Operational</p>
+    </footer>
+
+    <script>
+        // --- BACK BUTTON NAVIGATION LOCK ---
+        (function enforceReturnNavigation() {
+            history.pushState({ page: 'portal' }, document.title, location.href);
+            
+            window.addEventListener('popstate', (event) => {
+                history.pushState({ page: 'portal' }, document.title, location.href);
+            });
+        })();
+
+        // --- THEME ENGINE ---
+        const body = document.body;
+        const themeBtn = document.querySelector('.theme-toggle-btn');
+        const themeIcon = document.querySelector('.theme-icon');
+
+        const savedTheme = localStorage.getItem('portalTheme') || 'dark';
+        body.setAttribute('data-theme', savedTheme);
+        updateIcon(savedTheme);
+
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('portalTheme', newTheme);
+            updateIcon(newTheme);
+        });
+
+        function updateIcon(theme) {
+            themeIcon.innerText = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // --- SHARE BUTTON FUNCTIONALITY ---
+        const shareBtn = document.getElementById('shareBtn');
+        const shareBtnText = document.getElementById('shareBtnText');
+        const appLink = "https://play.google.com/store/apps/details?id=physics.elab.app";
+
+        shareBtn.addEventListener('click', async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'LaxoshEdu App',
+                        text: 'Check out LaxoshEdu app on Google Play Store!',
+                        url: appLink
+                    });
+                } catch (err) {
+                    // User cancelled share dialog
+                }
+            } else {
+                // Fallback: Copy link to clipboard
+                navigator.clipboard.writeText(appLink).then(() => {
+                    shareBtnText.innerText = "Copied!";
+                    setTimeout(() => {
+                        shareBtnText.innerText = "Share";
+                    }, 2500);
+                });
+            }
+        });
+
+        // --- ENTRANCE ANIMATION ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const target = document.querySelector('.animate-target');
+            setTimeout(() => {
+                target.classList.add('animate-show');
+            }, 100);
+        });
+    </script>
+</body>
+</html>

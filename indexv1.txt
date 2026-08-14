@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liquid Portal Pro | LAXOSHEDU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- DYNAMIC THEME VARIABLES --- */
+        :root {
+            --bg-color: #070b12;
+            --bg-gradient: linear-gradient(135deg, #070b12, #101a26);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #94a9b8;
+            --accent: #00e5ff;
+            --nav-bg: rgba(255, 255, 255, 0.05);
+            --container-width: 1100px;
+
+            /* Category Smart Colors */
+            --physics-color: #00e5ff;
+            --chem-color: #00ff9d;
+            --bio-color: #ff007f;
+            --acad-color: #ff9f00;
+            --other-color: #a855f7;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f0f4f8;
+            --bg-gradient: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(0, 0, 0, 0.08);
+            --text-main: #1a202c;
+            --text-muted: #4a5568;
+            --accent: #3182ce;
+            --nav-bg: rgba(255, 255, 255, 0.7);
+
+            /* Light mode adjusted smart colors */
+            --physics-color: #0284c7;
+            --chem-color: #059669;
+            --bio-color: #db2777;
+            --acad-color: #d97706;
+            --other-color: #7c3aed;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            transition: background 0.4s ease, color 0.4s ease, border 0.4s ease;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 120px;
+        }
+
+        /* --- FIXED LIQUID NAV --- */
+        .top-navbar {
+            position: fixed;
+            top: 20px;
+            width: 90%;
+            max-width: var(--container-width);
+            height: 70px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            z-index: 1000;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .nav-logo { font-weight: 700; font-size: 1.15rem; cursor: default; white-space: nowrap; }
+        .nav-logo span { color: var(--accent); }
+
+        /* --- DESKTOP MENU BAR --- */
+        .desktop-menu {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .desktop-menu a {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 20px;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .desktop-menu a:hover, .desktop-menu .theme-toggle-btn:hover {
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--accent);
+        }
+
+        /* Generic Theme Button Styles */
+        .theme-toggle-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: 0.3s;
+        }
+
+        .desktop-menu .theme-toggle-btn {
+            font-size: 1.1rem;
+            padding: 6px 10px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Mobile Hamburger Icon */
+        .menu-trigger {
+            cursor: pointer;
+            font-size: 1.8rem;
+            background: none;
+            border: none;
+            color: var(--text-main);
+            display: none;
+            align-items: center;
+        }
+
+        /* --- MOBILE DROPDOWN MENU --- */
+        .menu-overlay {
+            position: fixed;
+            top: 100px;
+            right: 5%;
+            width: 260px;
+            max-height: 80vh;
+            overflow-y: auto;
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--card-border);
+            border-radius: 25px;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 999;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        .menu-overlay a, .menu-overlay .theme-toggle-btn {
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 10px 14px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .menu-overlay a:hover, .menu-overlay .theme-toggle-btn:hover { 
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--accent);
+        }
+
+        .menu-sep { height: 1px; background: var(--card-border); margin: 5px 0; }
+
+        /* Responsive Breakpoints for Menu */
+        @media (max-width: 990px) {
+            .desktop-menu { display: none; }
+            .menu-trigger { display: flex; }
+            .top-navbar { width: 95%; padding: 0 20px; }
+        }
+        @media (min-width: 991px) {
+            .menu-overlay { display: none !important; }
+        }
+
+        /* --- MAIN WRAPPER & ALIGNMENT --- */
+        .main-wrapper {
+            width: 100%;
+            max-width: var(--container-width);
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        /* --- SECTION ANCHOR OFFSETS --- */
+        .tool-section {
+            scroll-margin-top: 110px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        /* --- MAIN APP HERO CARD --- */
+        #home-app { scroll-margin-top: 130px; }
+        .main-app-link { text-decoration: none; display: block; opacity: 0; transform: translateY(30px); }
+
+        .featured-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 35px;
+            padding: 60px;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .featured-card::after {
+            content: '';
+            position: absolute;
+            width: 600px; height: 600px;
+            background: linear-gradient(45deg, var(--accent), #7209b7);
+            filter: blur(80px);
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            z-index: 0;
+            transition: 0.8s ease;
+        }
+
+        .featured-card:hover::after { opacity: 0.2; transform: translate(-50%, -50%) scale(1.6); }
+        .featured-card:hover { transform: translateY(-10px); border-color: var(--accent); box-shadow: 0 40px 80px rgba(0,0,0,0.4); }
+
+        .featured-icon { width: 180px; height: 180px; border-radius: 40px; overflow: hidden; z-index: 1; position: relative; flex-shrink: 0; }
+        .featured-icon img { width: 100%; height: 100%; object-fit: cover; }
+        .featured-content { z-index: 1; flex: 1; }
+
+        /* --- PRIMARY BUTTON (TRANSPARENT BG WITH FIXED BORDER) --- */
+        .badge-primary-btn { 
+            background: transparent; 
+            color: var(--accent); 
+            border: 2px solid var(--accent);
+            font-size: 0.95rem; 
+            font-weight: 700; 
+            padding: 10px 26px; 
+            border-radius: 50px; 
+            margin-bottom: 22px; 
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .featured-card:hover .badge-primary-btn {
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--accent);
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
+        }
+
+        .featured-title { font-size: 2.5rem; color: var(--text-main); line-height: 1.15; margin-bottom: 15px; }
+        .featured-desc { color: var(--text-muted); line-height: 1.6; font-size: 1.05rem; }
+
+        /* --- SECTION HEADING UNDER MAIN HERO CARD --- */
+        .main-section-heading {
+            text-align: center;
+            margin: 10px 0 10px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .main-section-heading h2 {
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .main-section-heading .heading-accent-line {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), #7209b7);
+            margin: 10px auto 0;
+            border-radius: 4px;
+        }
+
+        /* --- CATEGORY INTRO CARD WITH SMART COLORS --- */
+        .category-intro-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-left: 6px solid var(--cat-color, var(--accent));
+            border-radius: 25px;
+            padding: 28px 32px;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .category-intro-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, var(--cat-color, var(--accent)), transparent);
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        .category-intro-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.25), 0 0 15px var(--cat-color, var(--accent));
+            border-color: var(--cat-color, var(--accent));
+        }
+
+        .category-intro-text { flex: 1; }
+
+        .category-intro-card h2 {
+            font-size: 1.7rem;
+            color: var(--text-main);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-intro-card p {
+            color: var(--text-muted);
+            font-size: 0.98rem;
+            line-height: 1.5;
+        }
+
+        /* ARROW INDICATOR BADGE */
+        .category-arrow-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--cat-color, var(--accent));
+            border-radius: 30px;
+            color: var(--cat-color, var(--accent));
+            font-size: 0.88rem;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .category-arrow-badge span {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .category-intro-card:hover .category-arrow-badge {
+            background: var(--cat-color, var(--accent));
+            color: #000000;
+            box-shadow: 0 0 15px var(--cat-color, var(--accent));
+        }
+
+        .category-intro-card:hover .category-arrow-badge span {
+            transform: translateY(4px);
+        }
+
+        /* SMART COLOR CLASSES */
+        .intro-physics { --cat-color: var(--physics-color); }
+        .intro-chemistry { --cat-color: var(--chem-color); }
+        .intro-biology { --cat-color: var(--bio-color); }
+        .intro-academic { --cat-color: var(--acad-color); }
+        .intro-other { --cat-color: var(--other-color); }
+
+        /* --- APP GRID & CARDS --- */
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 30px;
+            padding: 35px 25px 30px;
+            text-decoration: none;
+            color: var(--text-main);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* GRID CARD HOVER EFFECTS */
+        .app-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(0, 229, 255, 0.1);
+        }
+
+        .app-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+        }
+
+        .app-card .app-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        /* --- OPEN TOOL BUTTON FOR GRID CARDS --- */
+        .open-tool-btn {
+            display: inline-block;
+            padding: 8px 24px;
+            background: rgba(0, 229, 255, 0.1);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            margin-top: auto;
+        }
+
+        .app-card:hover .open-tool-btn {
+            background: var(--accent);
+            color: #000000;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .app-icon-small { 
+            width: 90px; 
+            height: 90px; 
+            margin: 0 auto 20px; 
+            border-radius: 25px; 
+            overflow: hidden; 
+            transition: 0.4s; 
+            flex-shrink: 0; 
+        }
+        
+        .app-card:hover .app-icon-small { transform: scale(1.1) rotate(-5deg); }
+        .app-icon-small img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- LETTER AVATAR FALLBACK STYLE --- */
+        .letter-avatar {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--accent), #7209b7);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 3.5rem;
+            border-radius: inherit;
+            text-transform: uppercase;
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.2);
+            user-select: none;
+        }
+
+        .app-icon-small .letter-avatar {
+            font-size: 2.2rem;
+        }
+
+        /* --- ABOUT SECTION --- */
+        #about { scroll-margin-top: 110px; }
+        .content-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 35px;
+            padding: 50px;
+            opacity: 0;
+            margin-bottom: 60px;
+        }
+        .content-section p { line-height: 1.9; color: var(--text-muted); margin-bottom: 20px; text-align: justify; font-size: 1.05rem; }
+
+        /* --- CONTINUOUS ATTENTION GRABBER --- */
+        .attention-container {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-top: 40px;
+            padding-top: 35px;
+            border-top: 1px solid var(--card-border);
+        }
+
+        .attention-wrapper {
+            position: relative;
+            width: 60px; height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .attention-blob {
+            position: absolute;
+            width: 100%; height: 100%;
+            background: linear-gradient(45deg, var(--accent), #7209b7);
+            border-radius: 40% 60% 60% 40%;
+            animation: spinBlob 4s linear infinite;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+        }
+
+        .attention-ring {
+            position: absolute;
+            width: 100%; height: 100%;
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            animation: pulseRing 2s ease-out infinite;
+        }
+
+        .attention-text { display: flex; flex-direction: column; }
+        .attention-text .status {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .attention-text .subtext { font-size: 0.95rem; color: var(--text-muted); }
+
+        @keyframes spinBlob {
+            0% { transform: rotate(0deg); border-radius: 40% 60% 60% 40%; }
+            50% { border-radius: 60% 40% 40% 60%; }
+            100% { transform: rotate(360deg); border-radius: 40% 60% 60% 40%; }
+        }
+        @keyframes pulseRing {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        /* --- FOOTER --- */
+        footer { width: 100%; padding: 40px; background: rgba(0,0,0,0.2); text-align: center; color: var(--text-muted); margin-top: auto; }
+
+        /* --- LOAD ANIMATIONS --- */
+        .animate-show { animation: fadeInUp 0.8s forwards; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile Adjustments for Main Content */
+        @media (max-width: 850px) {
+            .featured-card { flex-direction: column; text-align: center; padding: 40px; }
+            .featured-title { font-size: 2rem; }
+            .attention-container { flex-direction: column; text-align: center; }
+            .category-intro-card { flex-direction: column; text-align: center; padding: 25px; }
+            .category-intro-card h2 { justify-content: center; }
+            .category-arrow-badge { margin-top: 10px; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <nav class="top-navbar">
+        <div class="nav-logo">Laxosh<span>Edu</span></div>
+        
+        <!-- DESKTOP MENU -->
+        <div class="desktop-menu">
+            <a href="#home-app">Home</a>
+            <a href="#physics-tools">Physics</a>
+            <a href="#chemistry-tools">Chemistry</a>
+            <a href="#biology-tools">Biology</a>
+            <a href="#academic-tools">Academic</a>
+            <a href="#other-tools">Other</a>
+            <a href="#about">About</a>
+            <button class="theme-toggle-btn" title="Toggle Theme">
+                <span class="theme-icon">☀️</span>
+            </button>
+        </div>
+
+        <!-- MOBILE MENU BUTTON -->
+        <button class="menu-trigger" id="menuBtn">🍔</button>
+    </nav>
+
+    <!-- MOBILE OVERLAY MENU -->
+    <div class="menu-overlay" id="menuOverlay">
+        <a href="#home-app">🏠 Home App</a>
+        <a href="#physics-tools">⚡ Physics Tools</a>
+        <a href="#chemistry-tools">🧪 Chemistry Tools</a>
+        <a href="#biology-tools">🧬 Biology Tools</a>
+        <a href="#academic-tools">🎓 Academic Tools</a>
+        <a href="#other-tools">🛠️ Other Tools</a>
+        <a href="#about">ℹ️ About Portal</a>
+        <div class="menu-sep"></div>
+        <button class="theme-toggle-btn">
+            <span class="theme-icon">☀️</span> <span class="theme-text">Light Mode</span>
+        </button>
+    </div>
+
+    <div class="main-wrapper">
+        
+        <!-- MAIN APP HERO CARD -->
+        <a href="https://laxoshedu.github.io" class="main-app-link animate-target" id="home-app">
+            <div class="featured-card">
+                <div class="featured-icon">
+                    <img src="" alt="Quiz Maker Logo">
+                </div>
+                <div class="featured-content">
+                    <!-- TRANSPARENT WITH BORDER PRIMARY BUTTON -->
+                    <div class="badge-primary-btn">
+                        Open Primary Tool ➔
+                    </div>
+                    <h2 class="featured-title">The Ultimate Online Quiz Maker & Practice Tool</h2>
+                    <p class="featured-desc">Create, manage, and practice quizzes with ease. Design engaging tests, organize questions, track learning progress, and provide an interactive experience for students—all from one powerful online platform.</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- HEADING UNDER MAIN HERO TOOL -->
+        <div class="main-section-heading animate-target">
+            <h2>Explore Our Other Tools</h2>
+            <div class="heading-accent-line"></div>
+        </div>
+
+        <!-- 1. PHYSICS TOOLS SECTION -->
+        <section class="tool-section" id="physics-tools">
+            <div class="category-intro-card intro-physics animate-target">
+                <div class="category-intro-text">
+                    <h2>⚡ Physics Tools & Simulators</h2>
+                    <p>Interactive mechanics, optics, wave behavior, circuit visualizers, and electromagnetic simulators.</p>
+                </div>
+                <div class="category-arrow-badge">
+                    View Tools <span>↓</span>
+                </div>
+            </div>
+
+            <div class="app-grid">
+                <!-- Physics Tool 1 -->
+                <a href="https://laxoshedu.github.io/tools/typesofmotions.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Types of Motion Lab">
+                    </div>
+                    <h3>Types of Motion Lab</h3>
+                    <p class="app-desc">Explore uniform, accelerated, circular, and oscillatory motion concepts visually.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Physics Tool 2 -->
+                <a href="https://laxoshedu.github.io/tools/Interactivetransparencylab.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Interactive Transparency Lab">
+                    </div>
+                    <h3>Interactive Transparency Lab</h3>
+                    <p class="app-desc">Investigate light transmission, absorption, and opacity across various materials.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Physics Tool 3 -->
+                <a href="https://laxoshedu.github.io/tools/eclipselab.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Eclipse Lab">
+                    </div>
+                    <h3>Eclipse Lab</h3>
+                    <p class="app-desc">Simulate solar and lunar celestial alignments, umbra shadows, and orbital cycles.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Physics Tool 4 -->
+                <a href="https://laxoshedu.github.io/tools/light.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Light & Optics Lab">
+                    </div>
+                    <h3>Light & Optics Lab</h3>
+                    <p class="app-desc">Experiment with reflection, refraction, convex/concave lenses, and ray tracing.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Physics Tool 5 -->
+                <a href="https://laxoshedu.github.io/tools/virtualmagnetism.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Virtual Magnetism Lab">
+                    </div>
+                    <h3>Virtual Magnetism Lab</h3>
+                    <p class="app-desc">Visualize magnetic field lines, flux density, attraction, and electromagnetic forces.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Physics Tool 6 -->
+                <a href="https://laxoshedu.github.io/tools/electricitylab.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Electricity Lab">
+                    </div>
+                    <h3>Electricity Lab</h3>
+                    <p class="app-desc">Build virtual series/parallel circuits, measure voltage, current, and conductor resistance.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 2. CHEMISTRY TOOLS SECTION -->
+        <section class="tool-section" id="chemistry-tools">
+            <div class="category-intro-card intro-chemistry animate-target">
+                <div class="category-intro-text">
+                    <h2>🧪 Chemistry Tools & Utilities</h2>
+                    <p>Dynamic periodic tables, stoichiometry calculators, and equation balancers designed for chemical analysis.</p>
+                </div>
+                <div class="category-arrow-badge">
+                    View Tools <span>↓</span>
+                </div>
+            </div>
+
+            <div class="app-grid">
+
+                <!-- Tool 1 -->
+                <a href="https://laxoshedu.github.io/tools/physicalpropertiesofmetalsandnonmetals.html" class="app-card animate-target">
+                    <div class="app-icon-small">
+                        <img src="" alt="Physical Properties of Metals and Non-Metals Lab">
+                    </div>
+                    <h3>Physical Properties of Metals & Non-Metals</h3>
+                    <p class="app-desc">Explore and compare physical properties like conductivity, malleability, ductility, and luster visually.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+                <!-- Tool 2 -->
+                <a href="https://laxoshedu.github.io/tools/acidsbasesandsaltslab.html" class="app-card animate-target">
+                    <div class="app-icon-small">
+                        <img src="" alt="Acids, Bases, and Salts Lab">
+                    </div>
+                    <h3>Acids, Bases, and Salts Lab</h3>
+                    <p class="app-desc">Test pH levels, observe indicator color changes, and explore neutralization reactions interactively.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 3 -->
+                <a href="https://laxoshedu.github.io/tools/dischargetubeelectron.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Discharge Tube & Electron Discovery Lab">
+                    </div>
+                    <h3>Discharge Tube & Electron Discovery</h3>
+                    <p class="app-desc">Simulate cathode rays, high voltage gas discharges, fluorescent screens, and magnetic field deflections.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 4 -->
+                <a href="https://laxoshedu.github.io/tools/discoveryofneutron.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Discovery of Neutron Lab">
+                    </div>
+                    <h3>Discovery of Neutron Lab (Chadwick 1932)</h3>
+                    <p class="app-desc">Simulate alpha particle bombardment on beryllium targets, paraffin wax interactions, and proton ejection.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 5 -->
+                <a href="https://laxoshedu.github.io/tools/discoveryofproton.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Discovery of Proton Lab">
+                    </div>
+                    <h3>Discovery of Proton Lab (Canal Rays)</h3>
+                    <p class="app-desc">Investigate Eugen Goldstein's perforated cathode experiment and the stream of positive canal rays.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 6 -->
+                <a href="https://laxoshedu.github.io/tools/animatedperiodictable.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Animated Periodic Table">
+                    </div>
+                    <h3>Animated Periodic Table</h3>
+                    <p class="app-desc">Explore chemical elements through an interactive and animated periodic table.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 4. ACADEMIC TOOLS SECTION -->
+        <section class="tool-section" id="academic-tools">
+            <div class="category-intro-card intro-academic animate-target">
+                <div class="category-intro-text">
+                    <h2>🎓 Academic & Study Productivity</h2>
+                    <p>Essential utilities for grade calculation, citation formatting, study scheduling, and performance tracking.</p>
+                </div>
+                <div class="category-arrow-badge">
+                    View Tools <span>↓</span>
+                </div>
+            </div>
+
+            <div class="app-grid">
+                <!-- Tool 1 -->
+                <a href="https://laxoshedu.github.io/tools/examroomsallotingtool.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Exam Room Allotment System">
+                    </div>
+                    <h3>Exam Room Allotment System</h3>
+                    <p class="app-desc">Plan exams effortlessly by managing classes, subjects, rooms, and bench layouts. Generate optimized room allotments, create printable A4 seating plans, and organize schedules with ease.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+                <!-- Tool 2 -->
+
+                <a href="https://laxoshedu.github.io/tools/schooltimetablegenerator.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="School Timetable Generator">
+                    </div>
+                    <h3>School Timetable Generator</h3>
+                    <p class="app-desc">Create smart, conflict-free school timetables by managing teachers, subjects, classes, periods, and schedules. Generate organized weekly timetables with printable A4 layouts in just a few clicks.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 3 -->
+                
+                <a href="https://laxoshedu.github.io/tools/reportgenerator.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Report Generator">
+                    </div>
+                    <h3>Report Generator</h3>
+                    <p class="app-desc">Create professional student progress reports quickly with customizable templates.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 4 -->
+                <a href="https://laxoshedu.github.io/tools/marksmanager.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Marks Manager">
+                    </div>
+                    <h3>Marks Manager</h3>
+                    <p class="app-desc">Manage student marks, calculate totals, percentages, grades, and generate results.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 5 -->
+                <a href="https://laxoshedu.github.io/tools/mcqsslideshowgenerator.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="MCQs Slideshow Generator">
+                    </div>
+                    <h3>MCQs Slideshow Generator</h3>
+                    <p class="app-desc">Convert multiple-choice questions into engaging slideshow presentations for teaching.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 6 -->
+                <a href="https://laxoshedu.github.io/tools/educationalshortvideogenerator.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Educational Short Video Generator">
+                    </div>
+                    <h3>Educational Short Video Generator</h3>
+                    <p class="app-desc">Generate educational short videos with formatted content for quick learning.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 7 -->
+                <a href="https://laxoshedu.github.io/tools/englishpranonciator.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="English Pronunciator">
+                    </div>
+                    <h3>English Pronunciator</h3>
+                    <p class="app-desc">Practice English pronunciation with clear word playback and pronunciation guidance.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 8 -->
+                <a href="https://laxoshedu.github.io/tools/frs.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Employee Facial Recognition Attendance System">
+                    </div>
+                    <h3>Employee Facial Recognition Attendance</h3>
+                    <p class="app-desc">Streamline employee attendance with AI-powered facial recognition. Register staff, record real-time check-ins and check-outs, manage attendance logs, and generate accurate reports effortlessly.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 9 -->
+                <a href="https://laxoshedu.github.io/tools/onlinetudentattendence.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Online Student Attendance System">
+                    </div>
+                    <h3>Online Student Attendance System</h3>
+                    <p class="app-desc">Manage student attendance digitally with an easy-to-use online system. Record daily attendance, track absentees, organize class-wise records, and generate accurate attendance reports in minutes.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 10 -->
+
+                <a href="https://laxoshedu.github.io/tools/smartschoolsectionshufflingtool.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Smart School Section Shuffling Tool">
+                    </div>
+                    <h3>Smart School Section Shuffling Tool</h3>
+                    <p class="app-desc">Instantly shuffle students between sections with smart balancing, or manually assign selected students to different sections based on academic performance, results, behavior, participation, and overall classroom activities.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 11 -->
+                <a href="https://laxoshedu.github.io/tools/calculatesemestergpa%26cgpa.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Semester GPA & CGPA Calculator">
+                    </div>
+                    <h3>Semester GPA & CGPA Calculator</h3>
+                    <p class="app-desc">Calculate your Semester GPA (SGPA) and Cumulative GPA (CGPA) instantly with accurate credit-based calculations, detailed results, and an easy-to-use interface.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Tool 11 -->
+                <a href="https://laxoshedu.github.io/tools/idcardmaker.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="ID Card Maker">
+                    </div>
+                    <h3>ID Card Maker</h3>
+                    <p class="app-desc">Create professional student, teacher, employee, and school ID cards with customizable details, photos, layouts, and printable designs.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 5. OTHER TOOLS SECTION -->
+        <section class="tool-section" id="other-tools">
+            <div class="category-intro-card intro-other animate-target">
+                <div class="category-intro-text">
+                    <h2>🛠️ General Tools</h2>
+                    <p>Data processing modules, social communication tools, and administrative portals for portal productivity.</p>
+                </div>
+                <div class="category-arrow-badge">
+                    View Tools <span>↓</span>
+                </div>
+            </div>
+
+            <div class="app-grid">
+                <a href="https://laxoshedu.github.io/tools/expandimageto4apages.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Expand Image to 4 A4 Pages">
+                    </div>
+                    <h3>Expand Image to 4 A4 Pages</h3>
+                    <p class="app-desc">Split and enlarge any image across four A4 pages for high-quality poster printing.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+
+                <!-- Light My House -->
+                <a href="https://laxoshedu.github.io/tools/lightmyhouse.html" class="app-card animate-target" target="_blank">
+                    <div class="app-icon-small">
+                        <img src="" alt="Light My House">
+                    </div>
+                    <h3>Light My House</h3>
+                    <p class="app-desc">Design and visualize your home's lighting by placing bulbs, adjusting brightness, and creating the perfect lighting layout for every room.</p>
+                    <span class="open-tool-btn">Open Tool</span>
+                </a>
+            </div>
+        </section>
+        
+
+        <!-- ABOUT SECTION -->
+        <section class="content-section animate-target" id="about">
+            <h2 style="margin-bottom: 25px; font-size: 2rem;">About LAXOSHEDU Infrastructure</h2>
+            <p>
+                LAXOSHEDU is a comprehensive educational hub designed to empower teachers, students, and educational professionals with innovative digital tools that simplify teaching, learning, and academic management. Our platform brings together interactive resources in one place, making education more engaging, organized, and accessible for everyone.
+            </p>
+            <p>
+                Whether you're creating quizzes, practicing for examinations, preparing classroom activities, managing study materials, or exploring educational utilities, LAXOSHEDU provides a seamless experience that supports learning at every stage. Our goal is to save time, improve productivity, and encourage active participation through user-friendly and interactive tools.
+            </p>
+            <p>
+                At LAXOSHEDU, we believe that technology should make education smarter, more collaborative, and more enjoyable. We are committed to continuously developing innovative solutions that help educators teach more effectively, students learn with confidence, and professionals access practical tools that support their daily educational and administrative needs. 
+            </p>
+            
+            <!-- ATTENTION GRABBER (SYSTEM ONLINE ANIMATION) -->
+            <div class="attention-container">
+                <div class="attention-wrapper">
+                    <div class="attention-blob"></div>
+                    <div class="attention-ring"></div>
+                </div>
+                <div class="attention-text">
+                    <span class="status">Platform Ready</span>
+                    <span class="subtext">All educational tools are online and ready to support teaching, learning, and productivity.</span>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 LAXOSHEDU Unified Portal • All Systems Operational</p>
+    </footer>
+
+    <script>
+        // --- LOGO FALLBACK ENGINE ---
+        function initLogoFallbacks() {
+            const cards = document.querySelectorAll('.featured-card, .app-card');
+
+            cards.forEach(card => {
+                const iconContainer = card.querySelector('.featured-icon, .app-icon-small');
+                if (!iconContainer) return;
+
+                const img = iconContainer.querySelector('img');
+                const titleEl = card.querySelector('.featured-title, h3');
+                
+                // Extract first letter of tool title
+                const titleText = titleEl ? titleEl.textContent.trim() : '';
+                const firstLetter = titleText.charAt(0).toUpperCase() || '?';
+
+                const renderLetterAvatar = () => {
+                    iconContainer.innerHTML = `<div class="letter-avatar">${firstLetter}</div>`;
+                };
+
+                if (!img || !img.getAttribute('src') || img.getAttribute('src').trim() === '') {
+                    renderLetterAvatar();
+                } else {
+                    img.addEventListener('error', renderLetterAvatar);
+                    if (img.complete && img.naturalWidth === 0) {
+                        renderLetterAvatar();
+                    }
+                }
+            });
+        }
+
+        // --- THEME STORAGE & SYNC ENGINE ---
+        const body = document.body;
+        const themeToggleBtns = document.querySelectorAll('.theme-toggle-btn');
+        const themeIcons = document.querySelectorAll('.theme-icon');
+        const themeTexts = document.querySelectorAll('.theme-text');
+
+        const savedTheme = localStorage.getItem('portalTheme') || 'dark';
+        body.setAttribute('data-theme', savedTheme);
+        updateUI(savedTheme);
+
+        themeToggleBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('portalTheme', newTheme);
+                updateUI(newTheme);
+            });
+        });
+
+        function updateUI(theme) {
+            themeIcons.forEach(icon => {
+                icon.innerText = theme === 'dark' ? '☀️' : '🌙';
+            });
+            themeTexts.forEach(text => {
+                text.innerText = theme === 'dark' ? 'Light Mode' : 'Night Mode';
+            });
+        }
+
+        // --- MOBILE MENU LOGIC ---
+        const menuBtn = document.getElementById('menuBtn');
+        const menuOverlay = document.getElementById('menuOverlay');
+        
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menuOverlay.style.display = menuOverlay.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        document.addEventListener('click', () => { menuOverlay.style.display = 'none'; });
+        menuOverlay.addEventListener('click', (e) => { e.stopPropagation(); });
+
+        const menuLinks = menuOverlay.querySelectorAll('a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => { menuOverlay.style.display = 'none'; });
+        });
+
+        // --- DOM LOAD INITIALIZATION ---
+        document.addEventListener("DOMContentLoaded", () => {
+            initLogoFallbacks();
+
+            const targets = document.querySelectorAll('.animate-target');
+            targets.forEach((el, index) => {
+                setTimeout(() => {
+                    el.classList.add('animate-show');
+                }, index * 80);
+            });
+        });
+    </script>
+</body>
+</html>

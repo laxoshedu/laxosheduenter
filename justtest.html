@@ -210,7 +210,7 @@
 
         /* --- SECTION ANCHOR OFFSETS --- */
         .tool-section {
-            scroll-margin-top: 110px;
+            scroll-margin-top: 130px;
             display: flex;
             flex-direction: column;
             gap: 25px;
@@ -326,7 +326,7 @@
             margin-top: 20px;
         }
 
-        /* --- TRANSPARENT EMBEDDED IFRAME SECTION --- */
+        /* --- TRANSPARENT EMBEDDED IFRAME SECTION (NO HIGHLIGHT BORDER, FULL WIDTH ON MOBILE) --- */
         .iframe-section-wrapper {
             display: flex;
             flex-direction: column;
@@ -342,6 +342,9 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 10px;
+            width: 100%;
+            max-width: var(--container-width);
+            margin: 0 auto;
         }
 
         .iframe-top-bar h3 {
@@ -359,15 +362,17 @@
             border-radius: 35px;
             overflow: hidden;
             position: relative;
+            margin: 0 auto;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            transition: all 0.4s ease;
+            transition: background 0.4s ease, color 0.4s ease;
         }
 
+        /* Neutral border with NO highlight or color shift on hover */
         .iframe-container:hover {
-            border-color: var(--accent);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 20px rgba(0, 229, 255, 0.15);
+            border-color: var(--card-border);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
 
         .transparent-iframe {
@@ -380,9 +385,21 @@
         }
 
         @media (max-width: 900px) {
+            .iframe-section-wrapper {
+                width: 100vw;
+                margin-left: calc(-50vw + 50%);
+                padding: 0;
+            }
+            .iframe-top-bar {
+                padding: 0 20px;
+            }
             .iframe-container {
+                width: 100vw !important;
+                max-width: 100vw !important;
                 height: var(--iframe-height-mobile);
-                border-radius: 25px;
+                border-radius: 0 !important;
+                border-left: none;
+                border-right: none;
             }
         }
 
@@ -643,7 +660,7 @@
         }
 
         /* --- ABOUT SECTION --- */
-        #about { scroll-margin-top: 110px; }
+        #about { scroll-margin-top: 130px; }
         .content-section {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -1228,10 +1245,10 @@
         // --- BACKEND API CONFIGURATION ---
         const LAXOSHEDU_BACKEND_URL = "https://script.google.com/macros/s/AKfycbxyVyb_Htk0wyvGoCgzLNoEqxpwMHanvGQOpEtNkmLb_Y9APY4nsr2ohCRvbo0xrq7YAQ/exec";
 
-        // --- AUTOMATIC SHARE LINK GENERATION & SHARING ENGINE ---
+        // --- AUTOMATIC QUERY PARAMETER (?tool=) SHARE LINK ENGINE ---
         function shareSection(elementId, toolTitle) {
             const currentDomain = window.location.origin + window.location.pathname;
-            const shareUrl = `${currentDomain}#${elementId}`;
+            const shareUrl = `${currentDomain}?tool=${elementId}`;
             const title = `Check out ${toolTitle} on LaxoshEdu Portal!`;
 
             if (navigator.share) {
@@ -1351,7 +1368,7 @@
             link.addEventListener('click', () => { menuOverlay.style.display = 'none'; });
         });
 
-        // --- DOM LOAD & HASH HIGHLIGHT SCROLL ENGINE ---
+        // --- DOM LOAD & QUERY PARAMETER HIGHLIGHT SCROLL ENGINE ---
         document.addEventListener("DOMContentLoaded", () => {
             initLogoFallbacks();
             initDemoVideoTags();
@@ -1363,9 +1380,11 @@
                 }, index * 80);
             });
 
-            // Handle shared link hash scrolling & highlighting
-            if (window.location.hash) {
-                const targetElement = document.querySelector(window.location.hash);
+            // Handle query parameter (?tool=...) scrolling & highlighting
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetToolId = urlParams.get('tool');
+            if (targetToolId) {
+                const targetElement = document.getElementById(targetToolId);
                 if (targetElement) {
                     setTimeout(() => {
                         targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });

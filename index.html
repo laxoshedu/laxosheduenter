@@ -210,10 +210,21 @@
 
         /* --- SECTION ANCHOR OFFSETS --- */
         .tool-section {
-            scroll-margin-top: 110px;
+            scroll-margin-top: 130px;
             display: flex;
             flex-direction: column;
             gap: 25px;
+        }
+
+        /* --- HIGHLIGHT ANIMATION FOR SHARED LINKS --- */
+        @keyframes highlightPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.7); }
+            50% { transform: scale(1.02); box-shadow: 0 0 40px 15px var(--accent); border-color: var(--accent); background: rgba(0, 229, 255, 0.12); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
+        }
+        .highlight-target {
+            animation: highlightPulse 2.5s ease-in-out 3;
+            border-color: var(--accent) !important;
         }
 
         /* --- MAIN APP HERO CARD --- */
@@ -254,7 +265,13 @@
         .featured-icon img { width: 100%; height: 100%; object-fit: cover; }
         .featured-content { z-index: 1; flex: 1; }
 
-        /* --- PRIMARY BUTTON (TRANSPARENT BG WITH FIXED BORDER) --- */
+        /* --- PRIMARY BUTTON BORDER ANIMATION --- */
+        @keyframes primaryGlow {
+            0% { border-color: var(--accent); box-shadow: 0 0 15px rgba(0, 229, 255, 0.3); }
+            50% { border-color: #ff007f; box-shadow: 0 0 30px rgba(255, 0, 127, 0.6); }
+            100% { border-color: var(--accent); box-shadow: 0 0 15px rgba(0, 229, 255, 0.3); }
+        }
+
         .badge-primary-btn { 
             background: transparent; 
             color: var(--accent); 
@@ -268,7 +285,7 @@
             align-items: center;
             gap: 10px;
             letter-spacing: 0.5px;
-            box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+            animation: primaryGlow 3s infinite ease-in-out;
             transition: all 0.3s ease;
         }
 
@@ -276,39 +293,64 @@
             background: rgba(0, 229, 255, 0.15);
             color: var(--accent);
             transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(0, 229, 255, 0.5);
+            box-shadow: 0 0 35px rgba(0, 229, 255, 0.8);
         }
 
         .featured-title { font-size: 2.5rem; color: var(--text-main); line-height: 1.15; margin-bottom: 15px; }
         .featured-desc { color: var(--text-muted); line-height: 1.6; font-size: 1.05rem; }
 
-        /* --- TRANSPARENT EMBEDDED IFRAME SECTION --- */
+        /* --- SHARE BUTTON STYLES --- */
+        .share-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--accent);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .featured-share-container {
+            margin-top: 20px;
+        }
+
+        /* --- TRANSPARENT EMBEDDED IFRAME SECTION (NO HIGHLIGHT BORDER, FULL WIDTH ON MOBILE) --- */
         .iframe-section-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             width: 100%;
             opacity: 0;
             transform: translateY(30px);
+            scroll-margin-top: 130px;
         }
 
-        .iframe-header {
+        .iframe-top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 10px;
+            width: 100%;
+            max-width: var(--container-width);
+            margin: 0 auto;
         }
 
-        .iframe-header h3 {
-            font-size: 1.5rem;
-            color: var(--text-main);
+        .iframe-top-bar h3 {
+            font-size: 1.3rem;
             font-weight: 600;
-        }
-
-        .iframe-header span {
-            color: var(--accent);
-            font-size: 0.9rem;
-            font-weight: 500;
+            color: var(--text-main);
         }
 
         .iframe-container {
@@ -320,15 +362,17 @@
             border-radius: 35px;
             overflow: hidden;
             position: relative;
+            margin: 0 auto;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-            transition: all 0.4s ease;
+            transition: background 0.4s ease, color 0.4s ease;
         }
 
+        /* Neutral border with NO highlight or color shift on hover */
         .iframe-container:hover {
-            border-color: var(--accent);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 20px rgba(0, 229, 255, 0.15);
+            border-color: var(--card-border);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
         }
 
         .transparent-iframe {
@@ -341,9 +385,21 @@
         }
 
         @media (max-width: 900px) {
+            .iframe-section-wrapper {
+                width: 100vw;
+                margin-left: calc(-50vw + 50%);
+                padding: 0;
+            }
+            .iframe-top-bar {
+                padding: 0 20px;
+            }
             .iframe-container {
+                width: 100vw !important;
+                max-width: 100vw !important;
                 height: var(--iframe-height-mobile);
-                border-radius: 25px;
+                border-radius: 0 !important;
+                border-left: none;
+                border-right: none;
             }
         }
 
@@ -483,6 +539,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            scroll-margin-top: 130px;
         }
 
         /* GRID CARD HOVER EFFECTS */
@@ -506,10 +563,28 @@
             flex-grow: 1;
         }
 
-        /* --- OPEN TOOL BUTTON FOR GRID CARDS --- */
+        /* --- CARD ACTIONS CONTAINER --- */
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        .card-buttons-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
         .open-tool-btn {
             display: inline-block;
-            padding: 8px 24px;
+            padding: 8px 20px;
             background: rgba(0, 229, 255, 0.1);
             color: var(--accent);
             border: 1px solid var(--accent);
@@ -518,7 +593,6 @@
             font-weight: 600;
             letter-spacing: 0.5px;
             transition: all 0.3s ease;
-            margin-top: auto;
         }
 
         .app-card:hover .open-tool-btn {
@@ -526,6 +600,29 @@
             color: #000000;
             box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
             transform: scale(1.05);
+        }
+
+        /* --- WATCH DEMO VIDEO TAG --- */
+        .watch-demo-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 5px 12px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border);
+            transition: all 0.3s ease;
+        }
+
+        .watch-demo-tag:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: rgba(0, 229, 255, 0.08);
+            transform: translateY(-2px);
         }
 
         .app-icon-small { 
@@ -563,7 +660,7 @@
         }
 
         /* --- ABOUT SECTION --- */
-        #about { scroll-margin-top: 110px; }
+        #about { scroll-margin-top: 130px; }
         .content-section {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -686,27 +783,35 @@
 
     <div class="main-wrapper">
         
+        <!-- TRANSPARENT EMBEDDED DAY QUIZZER IFRAME SECTION (PLACED AT THE TOP) -->
+        <div class="iframe-section-wrapper animate-target" id="section-dayquizzer" data-share-title="Day Quizzer">
+            <div class="iframe-top-bar">
+                <h3>Day Quizzer</h3>
+                <button class="share-btn" onclick="shareSection('section-dayquizzer', 'Day Quizzer')">🔗 Share</button>
+            </div>
+            <div class="iframe-container">
+                <iframe src="https://laxoshedu.github.io/tools/dayquizzer.html" class="transparent-iframe" title="Day Quizzer" scrolling="no"></iframe>
+            </div>
+        </div>
+
         <!-- MAIN APP HERO CARD -->
-        <a href="https://laxoshedu.github.io" class="main-app-link animate-target" id="home-app">
+        <div class="main-app-link animate-target" id="home-app" data-share-title="The Ultimate Online Quiz Maker & Practice Tool">
             <div class="featured-card">
                 <div class="featured-icon">
                     <img src="" alt="Quiz Maker Logo">
                 </div>
                 <div class="featured-content">
-                    <!-- TRANSPARENT WITH BORDER PRIMARY BUTTON -->
-                    <div class="badge-primary-btn">
-                        Open Primary Tool ➔
-                    </div>
+                    <a href="https://laxoshedu.github.io" target="_blank" style="text-decoration:none;">
+                        <div class="badge-primary-btn">
+                            Open Primary Tool ➔
+                        </div>
+                    </a>
                     <h2 class="featured-title">The Ultimate Online Quiz Maker & Practice Tool</h2>
                     <p class="featured-desc">Create, manage, and practice quizzes with ease. Design engaging tests, organize questions, track learning progress, and provide an interactive experience for students—all from one powerful online platform.</p>
+                    <div class="featured-share-container">
+                        <button class="share-btn" onclick="shareSection('home-app', 'The Ultimate Online Quiz Maker & Practice Tool')">🔗 Share Primary Tool</button>
+                    </div>
                 </div>
-            </div>
-        </a>
-
-        <!-- TRANSPARENT EMBEDDED DAY QUIZZER IFRAME SECTION -->
-        <div class="iframe-section-wrapper animate-target">
-            <div class="iframe-container">
-                <iframe src="https://laxoshedu.github.io/tools/dayquizzer.html" class="transparent-iframe" title="Day Quizzer" scrolling="no"></iframe>
             </div>
         </div>
 
@@ -730,64 +835,94 @@
 
             <div class="app-grid">
                 <!-- Physics Tool 1 -->
-                <a href="https://laxoshedu.github.io/tools/typesofmotions.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-typesofmotions" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Types of Motion Lab">
                     </div>
                     <h3>Types of Motion Lab</h3>
                     <p class="app-desc">Explore uniform, accelerated, circular, and oscillatory motion concepts visually.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/typesofmotions.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-typesofmotions', 'Types of Motion Lab')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Physics Tool 2 -->
-                <a href="https://laxoshedu.github.io/tools/Interactivetransparencylab.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-interactivetransparencylab" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Interactive Transparency Lab">
                     </div>
                     <h3>Interactive Transparency Lab</h3>
                     <p class="app-desc">Investigate light transmission, absorption, and opacity across various materials.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/Interactivetransparencylab.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-interactivetransparencylab', 'Interactive Transparency Lab')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Physics Tool 3 -->
-                <a href="https://laxoshedu.github.io/tools/eclipselab.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-eclipselab" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Eclipse Lab">
                     </div>
                     <h3>Eclipse Lab</h3>
                     <p class="app-desc">Simulate solar and lunar celestial alignments, umbra shadows, and orbital cycles.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/eclipselab.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-eclipselab', 'Eclipse Lab')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Physics Tool 4 -->
-                <a href="https://laxoshedu.github.io/tools/light.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-light" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Light & Optics Lab">
                     </div>
                     <h3>Light & Optics Lab</h3>
                     <p class="app-desc">Experiment with reflection, refraction, convex/concave lenses, and ray tracing.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/light.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-light', 'Light & Optics Lab')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Physics Tool 5 -->
-                <a href="https://laxoshedu.github.io/tools/virtualmagnetism.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-virtualmagnetism" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Virtual Magnetism Lab">
                     </div>
                     <h3>Virtual Magnetism Lab</h3>
                     <p class="app-desc">Visualize magnetic field lines, flux density, attraction, and electromagnetic forces.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/virtualmagnetism.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-virtualmagnetism', 'Virtual Magnetism Lab')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Physics Tool 6 -->
-                <a href="https://laxoshedu.github.io/tools/electricitylab.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-electricitylab" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Electricity Lab">
                     </div>
                     <h3>Electricity Lab</h3>
                     <p class="app-desc">Build virtual series/parallel circuits, measure voltage, current, and conductor resistance.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/electricitylab.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-electricitylab', 'Electricity Lab')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -804,65 +939,94 @@
             </div>
 
             <div class="app-grid">
-
                 <!-- Tool 1 -->
-                <a href="https://laxoshedu.github.io/tools/physicalpropertiesofmetalsandnonmetals.html" class="app-card animate-target">
+                <div class="app-card animate-target" id="tool-physicalpropertiesofmetalsandnonmetals" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Physical Properties of Metals and Non-Metals Lab">
                     </div>
                     <h3>Physical Properties of Metals & Non-Metals</h3>
                     <p class="app-desc">Explore and compare physical properties like conductivity, malleability, ductility, and luster visually.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/physicalpropertiesofmetalsandnonmetals.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-physicalpropertiesofmetalsandnonmetals', 'Physical Properties of Metals & Non-Metals')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
                 <!-- Tool 2 -->
-                <a href="https://laxoshedu.github.io/tools/acidsbasesandsaltslab.html" class="app-card animate-target">
+                <div class="app-card animate-target" id="tool-acidsbasesandsaltslab" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Acids, Bases, and Salts Lab">
                     </div>
                     <h3>Acids, Bases, and Salts Lab</h3>
                     <p class="app-desc">Test pH levels, observe indicator color changes, and explore neutralization reactions interactively.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/acidsbasesandsaltslab.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-acidsbasesandsaltslab', 'Acids, Bases, and Salts Lab')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tool 3 -->
-                <a href="https://laxoshedu.github.io/tools/dischargetubeelectron.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-dischargetubeelectron" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Discharge Tube & Electron Discovery Lab">
                     </div>
                     <h3>Discharge Tube & Electron Discovery</h3>
                     <p class="app-desc">Simulate cathode rays, high voltage gas discharges, fluorescent screens, and magnetic field deflections.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/dischargetubeelectron.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-dischargetubeelectron', 'Discharge Tube & Electron Discovery')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tool 4 -->
-                <a href="https://laxoshedu.github.io/tools/discoveryofneutron.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-discoveryofneutron" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Discovery of Neutron Lab">
                     </div>
                     <h3>Discovery of Neutron Lab (Chadwick 1932)</h3>
                     <p class="app-desc">Simulate alpha particle bombardment on beryllium targets, paraffin wax interactions, and proton ejection.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/discoveryofneutron.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-discoveryofneutron', 'Discovery of Neutron Lab (Chadwick 1932)')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tool 5 -->
-                <a href="https://laxoshedu.github.io/tools/discoveryofproton.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-discoveryofproton" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Discovery of Proton Lab">
                     </div>
                     <h3>Discovery of Proton Lab (Canal Rays)</h3>
                     <p class="app-desc">Investigate Eugen Goldstein's perforated cathode experiment and the stream of positive canal rays.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/discoveryofproton.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-discoveryofproton', 'Discovery of Proton Lab (Canal Rays)')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tool 6 -->
-                <a href="https://laxoshedu.github.io/tools/animatedperiodictable.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-animatedperiodictable" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Animated Periodic Table">
                     </div>
                     <h3>Animated Periodic Table</h3>
                     <p class="app-desc">Explore chemical elements through an interactive and animated periodic table.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/animatedperiodictable.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-animatedperiodictable', 'Animated Periodic Table')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -880,85 +1044,123 @@
 
             <div class="app-grid">
                 <!-- Tool 1 -->
-                <a href="https://laxoshedu.github.io/tools/examroomsallotingtool.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-examroomsallotingtool" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Exam Room Allotment System">
                     </div>
                     <h3>Exam Room Allotment System</h3>
                     <p class="app-desc">Plan exams effortlessly by managing classes, subjects, rooms, and bench layouts. Generate optimized room allotments, create printable A4 seating plans, and organize schedules with ease.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/examroomsallotingtool.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-examroomsallotingtool', 'Exam Room Allotment System')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
                 <!-- Tool 2 -->
-
-                <a href="https://laxoshedu.github.io/tools/schooltimetablegenerator.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-schooltimetablegenerator" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="School Timetable Generator">
                     </div>
                     <h3>School Timetable Generator</h3>
                     <p class="app-desc">Create smart, conflict-free school timetables by managing teachers, subjects, classes, periods, and schedules. Generate organized weekly timetables with printable A4 layouts in just a few clicks.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/schooltimetablegenerator.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-schooltimetablegenerator', 'School Timetable Generator')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tool 3 -->
-                
-                <a href="https://laxoshedu.github.io/tools/reportgenerator.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-reportgenerator" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Report Generator">
                     </div>
                     <h3>Report Generator</h3>
                     <p class="app-desc">Create professional student progress reports quickly with customizable templates.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/reportgenerator.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-reportgenerator', 'Report Generator')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tool 5 -->
-                <a href="https://laxoshedu.github.io/tools/mcqsslideshowgenerator.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-mcqsslideshowgenerator" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="MCQs Slideshow Generator">
                     </div>
                     <h3>MCQs Slideshow Generator</h3>
                     <p class="app-desc">Convert multiple-choice questions into engaging slideshow presentations for teaching.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/mcqsslideshowgenerator.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-mcqsslideshowgenerator', 'MCQs Slideshow Generator')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tool 6 -->
-                <a href="https://laxoshedu.github.io/tools/educationalshortvideogenerator.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-educationalshortvideogenerator" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Educational Short Video Generator">
                     </div>
                     <h3>Educational Short Video Generator</h3>
                     <p class="app-desc">Generate educational short videos with formatted content for quick learning.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/educationalshortvideogenerator.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-educationalshortvideogenerator', 'Educational Short Video Generator')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tool 7 -->
-                <a href="https://laxoshedu.github.io/tools/englishpranonciator.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-englishpranonciator" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="English Pronunciator">
                     </div>
                     <h3>English Pronunciator</h3>
                     <p class="app-desc">Practice English pronunciation with clear word playback and pronunciation guidance.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/englishpranonciator.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-englishpranonciator', 'English Pronunciator')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tool 11 -->
-                <a href="https://laxoshedu.github.io/tools/calculatesemestergpa%26cgpa.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-calculatesemestergpa" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Semester GPA & CGPA Calculator">
                     </div>
                     <h3>Semester GPA & CGPA Calculator</h3>
                     <p class="app-desc">Calculate your Semester GPA (SGPA) and Cumulative GPA (CGPA) instantly with accurate credit-based calculations, detailed results, and an easy-to-use interface.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/calculatesemestergpa%26cgpa.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-calculatesemestergpa', 'Semester GPA & CGPA Calculator')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
-                <!-- Tool 11 -->
-                <a href="https://laxoshedu.github.io/tools/idcardmaker.html" class="app-card animate-target" target="_blank">
+                <!-- Tool 12 -->
+                <div class="app-card animate-target" id="tool-idcardmaker" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="ID Card Maker">
                     </div>
                     <h3>ID Card Maker</h3>
                     <p class="app-desc">Create professional student, teacher, employee, and school ID cards with customizable details, photos, layouts, and printable designs.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/idcardmaker.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-idcardmaker', 'ID Card Maker')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -975,24 +1177,34 @@
             </div>
 
             <div class="app-grid">
-                <a href="https://laxoshedu.github.io/tools/expandimageto4apages.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-expandimageto4apages" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Expand Image to 4 A4 Pages">
                     </div>
                     <h3>Expand Image to 4 A4 Pages</h3>
                     <p class="app-desc">Split and enlarge any image across four A4 pages for high-quality poster printing.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/expandimageto4apages.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-expandimageto4apages', 'Expand Image to 4 A4 Pages')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Light My House -->
-                <a href="https://laxoshedu.github.io/tools/lightmyhouse.html" class="app-card animate-target" target="_blank">
+                <div class="app-card animate-target" id="tool-lightmyhouse" data-demo-url="">
                     <div class="app-icon-small">
                         <img src="" alt="Light My House">
                     </div>
                     <h3>Light My House</h3>
-                    <p class="app-desc">Sleep if the power cuts then the tool can immidiatly turn on your tarch.</p>
-                    <span class="open-tool-btn">Open Tool</span>
-                </a>
+                    <p class="app-desc">Sleep if the power cuts then the tool can immediately turn on your torch.</p>
+                    <div class="card-actions">
+                        <div class="card-buttons-row">
+                            <a href="https://laxoshedu.github.io/tools/lightmyhouse.html" class="open-tool-btn" target="_blank">Open Tool</a>
+                            <button class="share-btn" onclick="shareSection('tool-lightmyhouse', 'Light My House')">🔗 Share</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         
@@ -1033,6 +1245,52 @@
         // --- BACKEND API CONFIGURATION ---
         const LAXOSHEDU_BACKEND_URL = "https://script.google.com/macros/s/AKfycbxyVyb_Htk0wyvGoCgzLNoEqxpwMHanvGQOpEtNkmLb_Y9APY4nsr2ohCRvbo0xrq7YAQ/exec";
 
+        // --- AUTOMATIC QUERY PARAMETER (?tool=) SHARE LINK ENGINE ---
+        function shareSection(elementId, toolTitle) {
+            const currentDomain = window.location.origin + window.location.pathname;
+            const shareUrl = `${currentDomain}?tool=${elementId}`;
+            const title = `Check out ${toolTitle} on LaxoshEdu Portal!`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: `Explore this tool on LaxoshEdu: ${toolTitle}`,
+                    url: shareUrl,
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    alert(`Shareable link for "${toolTitle}" copied to clipboard!\n\n${shareUrl}`);
+                }).catch(err => {
+                    console.error('Failed to copy share link: ', err);
+                });
+            }
+        }
+
+        // --- WATCH DEMO VIDEO TAG INJECTION ENGINE ---
+        function initDemoVideoTags() {
+            const cards = document.querySelectorAll('.app-card');
+
+            cards.forEach(card => {
+                const demoUrl = card.getAttribute('data-demo-url');
+                if (demoUrl && demoUrl.trim() !== '') {
+                    const cardActions = card.querySelector('.card-buttons-row');
+                    if (cardActions && !cardActions.querySelector('.watch-demo-tag')) {
+                        const demoTag = document.createElement('a');
+                        demoTag.href = demoUrl.trim();
+                        demoTag.className = 'watch-demo-tag';
+                        demoTag.target = '_blank';
+                        demoTag.innerHTML = '▶ Watch Demo';
+                        
+                        demoTag.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                        });
+
+                        cardActions.appendChild(demoTag);
+                    }
+                }
+            });
+        }
+
         // --- LOGO FALLBACK ENGINE ---
         function initLogoFallbacks() {
             const cards = document.querySelectorAll('.featured-card, .app-card');
@@ -1044,7 +1302,6 @@
                 const img = iconContainer.querySelector('img');
                 const titleEl = card.querySelector('.featured-title, h3');
                 
-                // Extract first letter of tool title
                 const titleText = titleEl ? titleEl.textContent.trim() : '';
                 const firstLetter = titleText.charAt(0).toUpperCase() || '?';
 
@@ -1111,9 +1368,10 @@
             link.addEventListener('click', () => { menuOverlay.style.display = 'none'; });
         });
 
-        // --- DOM LOAD INITIALIZATION ---
+        // --- DOM LOAD & QUERY PARAMETER HIGHLIGHT SCROLL ENGINE ---
         document.addEventListener("DOMContentLoaded", () => {
             initLogoFallbacks();
+            initDemoVideoTags();
 
             const targets = document.querySelectorAll('.animate-target');
             targets.forEach((el, index) => {
@@ -1121,6 +1379,19 @@
                     el.classList.add('animate-show');
                 }, index * 80);
             });
+
+            // Handle query parameter (?tool=...) scrolling & highlighting
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetToolId = urlParams.get('tool');
+            if (targetToolId) {
+                const targetElement = document.getElementById(targetToolId);
+                if (targetElement) {
+                    setTimeout(() => {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetElement.classList.add('highlight-target');
+                    }, 600);
+                }
+            }
         });
     </script>
 </body>

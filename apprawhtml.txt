@@ -222,7 +222,7 @@
             <p class="hero-desc">Welcome to the LAXOSHEDU Hub. Your ultimate platform for interactive learning, educational tools, and seamless practice.</p>
             
             <!-- START BUTTON -->
-            <a href="https://laxoshedu.github.io/laxosheduenter/" class="start-btn">Start the Tool</a>
+            <a href="https://laxoshedu.github.io/" class="start-btn">Start the Tool</a>
         </div>
     </div>
 
